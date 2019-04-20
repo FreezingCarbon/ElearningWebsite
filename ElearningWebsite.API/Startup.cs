@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using ElearningWebsite.API.Data;
+using ElearningWebsite.API.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,7 +31,17 @@ namespace ElearningWebsite.API
         {
             services.AddDbContext<DataContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
-            ); 
+            );
+            // config for automapper and add to startup
+            var mapConfig = new MapperConfiguration(mc => {
+                mc.AddProfile(new AutoMapperProfile());
+            });
+            IMapper mapper = mapConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+            services.AddCors();
+            services.AddScoped(typeof(IAuthRepository<>), typeof(TeacherAuthRepository<>));
+            services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
