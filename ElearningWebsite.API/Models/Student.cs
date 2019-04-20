@@ -11,7 +11,6 @@ namespace ElearningWebsite.API.Models
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public int Budget { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<StudentCourse> StudentCourses { get; set; }
     }
