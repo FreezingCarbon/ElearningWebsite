@@ -46,8 +46,6 @@ namespace ElearningWebsite.API.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("Fee");
-
                     b.Property<string>("Name");
 
                     b.Property<string>("Requirement");
@@ -74,8 +72,6 @@ namespace ElearningWebsite.API.Migrations
                 {
                     b.Property<int>("StudentId")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int>("Budget");
 
                     b.Property<DateTime>("CreatedAt");
 

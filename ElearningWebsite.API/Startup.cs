@@ -45,7 +45,6 @@ namespace ElearningWebsite.API
             });
             IMapper mapper = mapConfig.CreateMapper();
             services.AddSingleton(mapper);
-
             services.AddCors();
             // Add resolver
             services.AddScoped(typeof(IAuthRepository<>), typeof(TeacherAuthRepository<>));
