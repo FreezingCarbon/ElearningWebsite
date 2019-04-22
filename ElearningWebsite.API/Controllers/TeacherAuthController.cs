@@ -57,7 +57,8 @@ namespace ElearningWebsite.API.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, teacherFromRepo.TeacherId.ToString()),
-                new Claim(ClaimTypes.Name, teacherFromRepo.Username)
+                new Claim(ClaimTypes.Name, teacherFromRepo.Username),
+                new Claim(ClaimTypes.Role, "Teacher")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
