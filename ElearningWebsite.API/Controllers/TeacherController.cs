@@ -1,4 +1,5 @@
 using System;
+using System.Web;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,6 +13,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Http;
+using Imgur.API.Authentication.Impl;
+using Imgur.API.Endpoints.Impl;
+using Imgur.API.Models;
+using System.IO;
+using Imgur.API;
+using Microsoft.Extensions.Configuration;
 
 namespace ElearningWebsite.API.Controllers
 {
@@ -21,15 +29,16 @@ namespace ElearningWebsite.API.Controllers
     {
         private readonly ITeacherRepository _repo;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
 
-        public TeacherController(ITeacherRepository repo, IMapper mapper)
+        public TeacherController(ITeacherRepository repo, IMapper mapper, IConfiguration config)
         {
             this._repo = repo;
             this._mapper = mapper;
+            this._config = config;
         }
 
-        [Route("courses/{teacherId}")]
-        [HttpGet]
+        [HttpGet("{teacherId}/courses")]
         public async Task<IActionResult> GetCourses([FromQuery]CourseParam courseParam, int teacherId)
         {
             var courses = await _repo.GetCourses(courseParam, teacherId);
@@ -40,22 +49,147 @@ namespace ElearningWebsite.API.Controllers
             return Ok(coursesToReturn);
         }
 
-        [Route("course")]
-        [HttpGet]
-        public async Task<IActionResult> GetCourse([FromBody]JObject content)
+        [HttpGet("{teacherId}/course/{courseId}")]
+        public async Task<IActionResult> GetCourse(int teacherId, int courseId)
+        {
+            var course = await _repo.GetCourse(courseId, teacherId);
+            var courseToReturn = _mapper.Map<CourseForDetailedDto>(course);
+
+            return Ok(courseToReturn);
+            // var course = await _repo.GetCourse(courseId, teacherId);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTeacher(int id)
+        {
+            var teacherFromRepo = await _repo.GetTeacher(id);
+
+            if(teacherFromRepo == null)
+                return BadRequest("This teacher doesn't exist");
+            
+            var teacherToReturn = _mapper.Map<TeacherDetailedDto>(teacherFromRepo);
+            return Ok(teacherToReturn);
+        }
+
+        [HttpPost("course/{teacherId}")]
+        public async Task<IActionResult> AddCourse([FromBody]CourseForAddDto courseForAdd, int teacherId)
+        {
+            string auth = Request.Headers["Authorization"]; // get bearer string
+            if(auth == null) {
+                return Unauthorized();
+            }
+
+            AuthHelper authCheck = new AuthHelper();
+            if(authCheck.BasicAuth(auth, teacherId, "Teacher") == false) {
+                return Unauthorized();
+            }
+
+            var course = _mapper.Map<Course>(courseForAdd);
+            var courseToReturn = _mapper.Map<CourseForDetailedDto>(await _repo.AddCourse(course, teacherId));
+
+            return Ok(courseToReturn);
+        }
+
+        private async Task<string> UploadImage(IFormFile image)
         {
             try {
-                var courseId = int.Parse(content.GetValue("courseId").ToString());
-                var teacherId = int.Parse(content.GetValue("teacherId").ToString());
+                var clientId = _config.GetSection("ImgurSettings").GetValue<string>("ClientId");
+                var clientSecret = _config.GetSection("ImgurSettings").GetValue<string>("ClientSecret");
 
-                var course = await _repo.GetCourse(courseId, teacherId);
-                var courseToReturn = _mapper.Map<CourseForDetailedDto>(course);
+                var client = new ImgurClient(clientId, clientSecret);
+                var endpoint = new ImageEndpoint(client);
 
-                return Ok(courseToReturn);
-            } catch(Exception e) {
-                return BadRequest("Invalid Course Id and Teacher Id: \n" + e.ToString());
+                var fileStream = image.OpenReadStream();
+                
+                IImage uploadImage = await endpoint.UploadImageStreamAsync(fileStream);
+
+                return uploadImage.Link;
+
+            } catch (ImgurException imgurEx) {
+                return null;
             }
-            // var course = await _repo.GetCourse(courseId, teacherId);
+        }
+
+        [HttpPost("{teacherId}/course/{courseId}")]
+        public async Task<IActionResult> AddCoursePhoto(int teacherId, int courseId)
+        {
+            string auth = Request.Headers["Authorization"]; // get bearer string
+            
+            if(auth == null) {
+                return Unauthorized();
+            }
+
+            AuthHelper authCheck = new AuthHelper();
+            if(authCheck.BasicAuth(auth, teacherId, "Teacher") == false) {
+                return Unauthorized();
+            }
+
+            var files = Request.Form.Files;
+            // init ava and cover file object
+            dynamic ava = null;
+            dynamic cover = null;
+            // condition check the request
+            int avaCount = 0;
+            int coverCount = 0;
+            // file checker init
+            FormFileChecker fileTypeChecker = new FormFileChecker();
+            foreach(var file in files)
+            {
+                if(fileTypeChecker.CheckFileType(file, "image")) {
+                    if(file.Name == "Ava") {
+                        if(avaCount < 1) {
+                            ava = file;
+                        } else {
+                            return BadRequest("Too much Ava to upload");
+                        }
+                    } else if(file.Name == "Cover") {
+                        if(coverCount < 1) {
+                            cover = file;
+                        } else {
+                            return BadRequest("Too much Cover to upload");
+                        }
+                    } else {
+                        return BadRequest("Invalid request. File must be set for Ava or Cover");
+                    }
+                } else {
+                    return BadRequest("Post file must be image type");
+                }
+            }
+
+            // Modify image link if posted data != null
+            var courseToUpdate = await _repo.GetCourse(courseId, teacherId);
+            if(ava != null) {
+                courseToUpdate.AvaUrl = await UploadImage(ava);
+            }
+            if(cover != null) {
+                courseToUpdate.CoverUrl = await UploadImage(cover);
+            }
+
+            await _repo.SaveAll();
+            var courseToReturn = _mapper.Map<CourseForDetailedDto>(courseToUpdate);
+
+            return Ok(courseToReturn);
+        }
+
+        [HttpDelete("{teacherId}/course/{courseId}")]
+        public async Task<IActionResult> DeleteCourse(int teacherId, int courseId)
+        {
+            string auth = Request.Headers["Authorization"]; // get bearer string
+            
+            if(auth == null) {
+                return Unauthorized();
+            }
+
+            AuthHelper authCheck = new AuthHelper();
+            if(authCheck.BasicAuth(auth, teacherId, "Teacher") == false) {
+                return Unauthorized();
+            }
+
+            if(await _repo.DeleteCourse(courseId)) {
+                return Ok();
+            } else {
+                return BadRequest("This course doesn't exist !!");
+            }
         }
 
         [HttpPut("{id}")]
@@ -80,22 +214,11 @@ namespace ElearningWebsite.API.Controllers
             return Ok(teacherToReturn);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTeacher(int id)
-        {
-            var teacherFromRepo = await _repo.GetTeacher(id);
-
-            if(teacherFromRepo == null)
-                return BadRequest("This teacher doesn't exist");
-            
-            var teacherToReturn = _mapper.Map<TeacherDetailedDto>(teacherFromRepo);
-            return Ok(teacherToReturn);
-        }
-
-        [HttpPut("course/{teacherId}")]
-        public async Task<IActionResult> AddCourse([FromBody]CourseForAddDto courseForAdd, int teacherId)
+        [HttpPut("{teacherId}/course/{courseId}")]
+        public async Task<IActionResult> UpdateCourse(int teacherId, int courseId, [FromBody]CourseForUpdateDto courseForUpdate)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
+                
             if(auth == null) {
                 return Unauthorized();
             }
@@ -105,37 +228,15 @@ namespace ElearningWebsite.API.Controllers
                 return Unauthorized();
             }
 
-            var course = _mapper.Map<Course>(courseForAdd);
-            var courseToReturn = _mapper.Map<CourseForDetailedDto>(await _repo.AddCourse(course, teacherId));
+            var courseFromRepo = await _repo.GetCourse(courseId, teacherId);
+            _mapper.Map(courseForUpdate, courseFromRepo);
+
+            await _repo.SaveAll();
+            var courseToReturn = _mapper.Map<CourseForDetailedDto>(courseFromRepo);
 
             return Ok(courseToReturn);
         }
 
-        [HttpDelete("course/{courseId}")]
-        public async Task<IActionResult> DeleteCourse([FromBody]JObject content, int courseId)
-        {
-            try {
-                var teacherId = int.Parse(content.GetValue("teacherId").ToString());
 
-                string auth = Request.Headers["Authorization"]; // get bearer string
-                if(auth == null) {
-                    return Unauthorized();
-                }
-
-                AuthHelper authCheck = new AuthHelper();
-                if(authCheck.BasicAuth(auth, teacherId, "Teacher") == false) {
-                    return Unauthorized();
-                }
-
-                if(await _repo.DeleteCourse(courseId)) {
-                    return Ok();
-                } else {
-                    return BadRequest("This course doesn't exist !!");
-                }
-
-            } catch(Exception e) {
-                return BadRequest("Invalid Course Id and Teacher Id: \n" + e.ToString());
-            }
-        }
     }
 }
