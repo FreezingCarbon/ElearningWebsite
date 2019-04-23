@@ -6,7 +6,6 @@ namespace ElearningWebsite.API.Dtos
     {
         public int CourseId { get; set; }
         public string Name { get; set; }
-        public int Fee { get; set; }
         public string CoverUrl { get; set; }
         public DateTime CreatedAt { get; set; }
     }
