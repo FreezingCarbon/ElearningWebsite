@@ -16,7 +16,6 @@ namespace ElearningWebsite.API.Helpers
             CreateMap<Course, CourseForListDto>();
             CreateMap<Course, CourseForDetailDP>();
             CreateMap<Course, CourseForDetailedDto>();
-            CreateMap<Course, CourseForImageUpload>();
         }
     }
 }
