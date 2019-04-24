@@ -145,6 +145,8 @@ namespace ElearningWebsite.API.Migrations
 
                     b.Property<int>("CourseId");
 
+                    b.Property<DateTime>("CreatedAt");
+
                     b.Property<string>("PublicId");
 
                     b.Property<string>("VideoUrl");
