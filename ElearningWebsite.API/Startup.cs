@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Imgur.API;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace ElearningWebsite.API
 {
@@ -47,10 +48,15 @@ namespace ElearningWebsite.API
             IMapper mapper = mapConfig.CreateMapper();
             services.AddSingleton(mapper);
             services.AddCors();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            // config max size form upload
+
             // Add resolver
             services.AddScoped(typeof(IAuthRepository<>), typeof(TeacherAuthRepository<>));
+            services.AddScoped(typeof(IAuthRepository<>), typeof(StudentAuthRepository<>));
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<IVideoRepository, VideoRepository>();
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
