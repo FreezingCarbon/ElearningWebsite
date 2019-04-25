@@ -12,5 +12,6 @@
     <PackageReference Include="NpgSql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.1"/>
     <PackageReference Include="AutoMapper" Version="8.0.0"/>
     <PackageReference Include="Imgur.API.NetCore" Version="1.0.1"/>
+    <PackageReference Include="CloudinaryDotNet" Version="1.7.0"/>
   </ItemGroup>
 </Project>
