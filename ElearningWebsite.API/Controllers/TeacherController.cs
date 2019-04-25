@@ -63,7 +63,7 @@ namespace ElearningWebsite.API.Controllers
         public async Task<IActionResult> GetTeacher(int id)
         {
             var teacherFromRepo = await _repo.GetTeacher(id);
-
+            
             if(teacherFromRepo == null)
                 return BadRequest("This teacher doesn't exist");
             
@@ -75,12 +75,8 @@ namespace ElearningWebsite.API.Controllers
         public async Task<IActionResult> AddCourse([FromBody]CourseForAddDto courseForAdd, int teacherId)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
-            if(auth == null) {
-                return Unauthorized();
-            }
 
-            AuthHelper authCheck = new AuthHelper();
-            if(authCheck.BasicAuth(auth, teacherId, "Teacher") == false) {
+            if(AuthHelper.BasicAuth(auth, teacherId, "Teacher") == false) {
                 return Unauthorized();
             }
 
@@ -90,41 +86,19 @@ namespace ElearningWebsite.API.Controllers
             return Ok(courseToReturn);
         }
 
-        private async Task<string> UploadImage(IFormFile image)
-        {
-            try {
-                var clientId = _config.GetSection("ImgurSettings").GetValue<string>("ClientId");
-                var clientSecret = _config.GetSection("ImgurSettings").GetValue<string>("ClientSecret");
-
-                var client = new ImgurClient(clientId, clientSecret);
-                var endpoint = new ImageEndpoint(client);
-
-                var fileStream = image.OpenReadStream();
-                
-                IImage uploadImage = await endpoint.UploadImageStreamAsync(fileStream);
-
-                return uploadImage.Link;
-
-            } catch (ImgurException imgurEx) {
-                return null;
-            }
-        }
-
         [HttpPost("{teacherId}/course/{courseId}")]
         public async Task<IActionResult> AddCoursePhoto(int teacherId, int courseId)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
             
-            if(auth == null) {
-                return Unauthorized();
-            }
-
-            AuthHelper authCheck = new AuthHelper();
-            if(authCheck.BasicAuth(auth, teacherId, "Teacher") == false) {
+            if(AuthHelper.BasicAuth(auth, teacherId, "Teacher") == false) {
                 return Unauthorized();
             }
 
             var files = Request.Form.Files;
+            if(files == null) {
+                return BadRequest("Request must contain at least a file");
+            }
             // init ava and cover file object
             dynamic ava = null;
             dynamic cover = null;
@@ -156,13 +130,19 @@ namespace ElearningWebsite.API.Controllers
                 }
             }
 
+            // create FileUploadHelper reference
+            FileUploadHelper fileUpload = new FileUploadHelper(_config);
             // Modify image link if posted data != null
             var courseToUpdate = await _repo.GetCourse(courseId, teacherId);
-            if(ava != null) {
-                courseToUpdate.AvaUrl = await UploadImage(ava);
-            }
-            if(cover != null) {
-                courseToUpdate.CoverUrl = await UploadImage(cover);
+            try {
+                if(ava != null) {
+                    courseToUpdate.AvaUrl = await fileUpload.UploadImage(ava);
+                }
+                if(cover != null) {
+                    courseToUpdate.CoverUrl = await fileUpload.UploadImage(cover);
+                }
+            } catch(ImgurException imgurEx) {
+                return BadRequest("Unable to upload image to Imgur: " + imgurEx.Message);
             }
 
             await _repo.SaveAll();
@@ -175,13 +155,8 @@ namespace ElearningWebsite.API.Controllers
         public async Task<IActionResult> DeleteCourse(int teacherId, int courseId)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
-            
-            if(auth == null) {
-                return Unauthorized();
-            }
 
-            AuthHelper authCheck = new AuthHelper();
-            if(authCheck.BasicAuth(auth, teacherId, "Teacher") == false) {
+            if(AuthHelper.BasicAuth(auth, teacherId, "Teacher") == false) {
                 return Unauthorized();
             }
 
@@ -196,12 +171,8 @@ namespace ElearningWebsite.API.Controllers
         public async Task<IActionResult> UpdateTeacher(int id, [FromBody]TeacherForUpdateDto teacherForUpdateDto)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
-            if(auth == null) { 
-                return Unauthorized();
-            }
 
-            AuthHelper authCheck = new AuthHelper();
-            if(authCheck.BasicAuth(auth, id, "Teacher") == false) {
+            if(AuthHelper.BasicAuth(auth, id, "Teacher") == false) {
                 return Unauthorized();
             }
             
@@ -218,13 +189,8 @@ namespace ElearningWebsite.API.Controllers
         public async Task<IActionResult> UpdateCourse(int teacherId, int courseId, [FromBody]CourseForUpdateDto courseForUpdate)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
-                
-            if(auth == null) {
-                return Unauthorized();
-            }
 
-            AuthHelper authCheck = new AuthHelper();
-            if(authCheck.BasicAuth(auth, teacherId, "Teacher") == false) {
+            if(AuthHelper.BasicAuth(auth, teacherId, "Teacher") == false) {
                 return Unauthorized();
             }
 
@@ -236,7 +202,5 @@ namespace ElearningWebsite.API.Controllers
 
             return Ok(courseToReturn);
         }
-
-
     }
 }
