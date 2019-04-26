@@ -56,7 +56,6 @@ namespace ElearningWebsite.API.Controllers
             var courseToReturn = _mapper.Map<CourseForDetailedDto>(course);
 
             return Ok(courseToReturn);
-            // var course = await _repo.GetCourse(courseId, teacherId);
         }
 
         [HttpGet("{id}")]
