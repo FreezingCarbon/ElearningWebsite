@@ -57,6 +57,7 @@ namespace ElearningWebsite.API
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
             services.AddScoped<IVideoRepository, VideoRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
