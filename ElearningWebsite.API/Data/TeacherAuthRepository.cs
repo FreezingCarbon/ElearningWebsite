@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ElearningWebsite.API.Data
 {
-    public class TeacherAuthRepository<T> : IAuthRepository<Teacher>
+    public class TeacherAuthRepository<T> : ITeacherAuthRepository<Teacher>
     {
         private readonly DataContext _context;
         public TeacherAuthRepository(DataContext context)
@@ -40,6 +40,7 @@ namespace ElearningWebsite.API.Data
 
             return user;
         }
+
         public async Task<bool> UserExists(string username)
         {
             if(await _context.Teachers.AnyAsync(x => x.Username == username))

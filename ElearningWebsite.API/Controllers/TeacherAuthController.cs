@@ -16,9 +16,9 @@ namespace ElearningWebsite.API.Controllers
     [ApiController]
     public class TeacherAuthController : ControllerBase
     {
-        private readonly IAuthRepository<Teacher> _repo;
+        private readonly ITeacherAuthRepository<Teacher> _repo;
         private readonly IConfiguration _config;
-        public TeacherAuthController(IAuthRepository<Teacher> repo, IConfiguration config)
+        public TeacherAuthController(ITeacherAuthRepository<Teacher> repo, IConfiguration config)
         {
             this._config = config;
             this._repo = repo;

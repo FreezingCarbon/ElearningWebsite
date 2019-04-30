@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ElearningWebsite.API.Data
 {
-    public class StudentAuthRepository<T> : IAuthRepository<Student>
+    public class StudentAuthRepository<T> : IStudentAuthRepository<Student>
     {
         private readonly DataContext _context;
         public StudentAuthRepository(DataContext context)

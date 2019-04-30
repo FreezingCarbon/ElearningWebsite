@@ -16,13 +16,12 @@ namespace ElearningWebsite.API.Controllers
     [ApiController]
     public class StudentAuthController : ControllerBase
     {
-        private readonly IAuthRepository<Student> _repo;
+        private readonly IStudentAuthRepository<Student> _repo;
         private readonly IConfiguration _config;
-        public StudentAuthController(IAuthRepository<Student> repo, IConfiguration config)
+        public StudentAuthController(IStudentAuthRepository<Student> repo, IConfiguration config)
         {
             this._config = config;
             this._repo = repo;
-
         }
 
         [HttpPost("register")]

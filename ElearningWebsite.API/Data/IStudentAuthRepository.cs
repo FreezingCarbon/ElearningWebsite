@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace ElearningWebsite.API.Data
 {
-    public interface IAuthRepository<T>
+    public interface IStudentAuthRepository<T>
     {
         Task<T> Register(T user, string password);
         Task<T> Login(string username, string password);

@@ -22,8 +22,12 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace ElearningWebsite.API
 {
+
     public class Startup
     {
+
+        readonly string allowSpecificOrigins = "AllowAllHeaders";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,9 +35,15 @@ namespace ElearningWebsite.API
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var origins = new string[] {
+                "http://localhost:4200", // development
+                "http://localhost/TM", // IIS
+            };
+            services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(opt => {
                     opt.SerializerSettings.ReferenceLoopHandling =
                         Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -47,13 +57,12 @@ namespace ElearningWebsite.API
             });
             IMapper mapper = mapConfig.CreateMapper();
             services.AddSingleton(mapper);
-            services.AddCors();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             // config max size form upload
 
             // Add resolver
-            services.AddScoped(typeof(IAuthRepository<>), typeof(TeacherAuthRepository<>));
-            services.AddScoped(typeof(IAuthRepository<>), typeof(StudentAuthRepository<>));
+            services.AddScoped(typeof(ITeacherAuthRepository<>), typeof(TeacherAuthRepository<>));
+            services.AddScoped(typeof(IStudentAuthRepository<>), typeof(StudentAuthRepository<>));
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
             services.AddScoped<IVideoRepository, VideoRepository>();
@@ -84,6 +93,12 @@ namespace ElearningWebsite.API
             }
 
             // app.UseHttpsRedirection();
+            app.UseCors(        builder => {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                }); 
             app.UseMvc();
         }
     }
