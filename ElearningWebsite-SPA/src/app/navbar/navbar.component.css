@@ -1,0 +1,7 @@
+.nav-link {
+    text-align: center;
+}
+
+.nav-link:hover {
+    background: gray;
+}
