@@ -1,16 +1,17 @@
-<nav class="navbar navbar-expand-md navbar-light" style="background: white;">
+<nav class="navbar navbar-expand-md navbar-light bg-light">
     <div class="container">
-        <a class="navbar-brand">Elearning</a>
+        <a class="navbar-brand" [routerLink]="['/home']">Elearning</a>
         <ul class="navbar-nav mr-auto ml-12">
-            <li class="nav-item" routerLinkActive="active">
-                <a class="nav-link">Courses</a>
+            <li *ngIf="loggedIn()" class="nav-item" routerLinkActive="active">
+                <a class="nav-link" [routerLink]="['/courseslist']">Your Courses</a>
+            </li>
+            <li *ngIf="!loggedIn()" class="nav-item" routerLinkActive="active">
+                <a class="nav-link" [routerLink]="['/courses']">Courses</a>
             </li>
             <li class="nav-item" routerLinkActive="active">
-                <a class="nav-link">About</a>
+                <a class="nav-link" [routerLink]="['/about']">About</a>
             </li>
-            <!-- <li class="nav-item">
-                <a class="nav-link" (click)="logout()">Logout</a>
-            </li> -->
+
         </ul>
 
         <div ngbDropdown *ngIf="loggedIn()" class="d-inline-block">
