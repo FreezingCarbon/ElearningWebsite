@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 offset-lg-1 col-lg-10">
+            <div class="text-center">
+                <img src="{{course.avaUrl}}" class="img-fluid" lt="">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 offset-lg-4 col-lg-10">
+            <h1>{{course.name.toUpperCase()}}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 offset-md-5 col-sm">
+            <div class="row mt-4">
+                <div class="p-0 m-0">
+                    <h2 class="text-center">Description</h2>
+                    <ul *ngFor="let description of descriptions" class="mt-1">
+                        <li class="mt-1 text-list">{{description}}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="p-0 m-0">
+                    <h2 class="text-center">Requirement</h2>
+                    <ul *ngFor="let requirement of requirements" class="mt-1">
+                        <li class="mt-1 text-list">{{requirement}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 offset-lg-3 col-lg-10" style="font-size: 40px">
+            Login or <button class="btn btn-primary btn-lg mr-2" (click)="toRegister()">Register</button> to continue
+        </div>
+    </div>
+</div>

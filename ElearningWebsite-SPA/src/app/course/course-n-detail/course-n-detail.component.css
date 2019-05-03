@@ -1,0 +1,15 @@
+ul.icon {
+    list-style-type: none;
+}
+
+ul li:before {
+    content: "\2713\0020";
+}
+
+.icon-list {
+    font-size: 40px;
+}
+
+.text-list {
+    font-size: 30px;
+}
