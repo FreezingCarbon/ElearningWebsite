@@ -1,5 +1,5 @@
 export interface Teacher {
-    id: number;
+    studentId: number;
     username: string;
     certificate: string;
 }
