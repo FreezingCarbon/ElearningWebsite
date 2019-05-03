@@ -70,7 +70,7 @@ namespace ElearningWebsite.API.Controllers
             return Ok(teacherToReturn);
         }
 
-        [HttpPost("course/{teacherId}")]
+        [HttpPost("{teacherId}/courses")]
         public async Task<IActionResult> AddCourse([FromBody]CourseForAddDto courseForAdd, int teacherId)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
@@ -85,7 +85,7 @@ namespace ElearningWebsite.API.Controllers
             return Ok(courseToReturn);
         }
 
-        [HttpPost("{teacherId}/course/{courseId}")]
+        [HttpPost("{teacherId}/courses/{courseId}")]
         public async Task<IActionResult> AddCoursePhoto(int teacherId, int courseId)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
@@ -150,7 +150,7 @@ namespace ElearningWebsite.API.Controllers
             return Ok(courseToReturn);
         }
 
-        [HttpDelete("{teacherId}/course/{courseId}")]
+        [HttpDelete("{teacherId}/courses/{courseId}")]
         public async Task<IActionResult> DeleteCourse(int teacherId, int courseId)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
@@ -184,7 +184,7 @@ namespace ElearningWebsite.API.Controllers
             return Ok(teacherToReturn);
         }
 
-        [HttpPut("{teacherId}/course/{courseId}")]
+        [HttpPut("{teacherId}/courses/{courseId}")]
         public async Task<IActionResult> UpdateCourse(int teacherId, int courseId, [FromBody]CourseForUpdateDto courseForUpdate)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string

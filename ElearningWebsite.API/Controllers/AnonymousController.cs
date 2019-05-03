@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ElearningWebsite.API.Controllers
 {
-    [Route("api/course")]
+    [Route("api")]
     [ApiController]
     public class AnonymousController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace ElearningWebsite.API.Controllers
             this._mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet("courses")]
         [AllowAnonymous]
         public async Task<IActionResult> GetCourses([FromQuery]CourseParam courseParam)
         {
@@ -34,7 +34,7 @@ namespace ElearningWebsite.API.Controllers
             return Ok(coursesToReturn);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("courses/{id}")]
         public async Task<IActionResult> GetCourse(int id)
         {
             var course = await _repo.GetCourse(id);
