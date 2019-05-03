@@ -24,10 +24,11 @@ namespace ElearningWebsite.API.Helpers
 
         public static async Task<PagedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
         {
-            var count = await source.CountAsync();
-      
+            var count = await source.CountAsync() - 1;
+
             var items = await source.Skip(pageNumber * pageSize).Take(pageSize).ToListAsync();
-              return new PagedList<T>(items, count, pageNumber, pageSize);
+
+            return new PagedList<T>(items, count, pageNumber, pageSize);
         }
     }
 }
