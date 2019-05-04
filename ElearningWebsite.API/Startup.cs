@@ -28,9 +28,6 @@ namespace ElearningWebsite.API
 
     public class Startup
     {
-
-        readonly string allowSpecificOrigins = "AllowAllHeaders";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -42,10 +39,6 @@ namespace ElearningWebsite.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var origins = new string[] {
-                "http://localhost:4200", // development
-                "http://localhost/TM", // IIS
-            };
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(opt => {
                     opt.SerializerSettings.ReferenceLoopHandling =
@@ -107,7 +100,7 @@ namespace ElearningWebsite.API
             }
 
             // app.UseHttpsRedirection();
-            app.UseCors(        builder => {
+            app.UseCors(builder => {
                     builder.AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod()
