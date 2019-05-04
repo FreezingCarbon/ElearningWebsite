@@ -7,12 +7,13 @@ using ElearningWebsite.API.Data;
 using ElearningWebsite.API.Dtos;
 using ElearningWebsite.API.Helpers;
 using ElearningWebsite.API.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace ElearningWebsite.API.Controllers
 {
-    [Route("api/teacher/{teacherId}/course/{courseId}/video")]
+    [Route("api/teacher/{teacherId}/courses/{courseId}/videos/")]
     [ApiController]
     public class VideoController : ControllerBase
     {
@@ -37,7 +38,7 @@ namespace ElearningWebsite.API.Controllers
         }
 
         [HttpPost]
-        [RequestSizeLimit(100_000_000_000)]
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> AddVideo(int courseId, int teacherId)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
@@ -58,6 +59,8 @@ namespace ElearningWebsite.API.Controllers
                     return BadRequest("Course Video must be type of video");
                 }
             }
+
+            // return Ok(files);
             
             var videoToReturn = new List<VideoForDetailedDto>();
             FileUploadHelper fileUploadHelper = new FileUploadHelper(_cloudinary);
@@ -79,8 +82,14 @@ namespace ElearningWebsite.API.Controllers
         }
 
         [HttpDelete("{videoId}")]
-        public async Task<IActionResult> DeleteVideo(int videoId)
+        public async Task<IActionResult> DeleteVideo(int teacherId, int videoId)
         {
+            string auth = Request.Headers["Authorization"]; // get bearer string
+
+            if(AuthHelper.BasicAuth(auth, teacherId, "Teacher") == false) {
+                return Unauthorized();
+            }
+
             var videoToDelete = await _repo.GetVideo(videoId);
 
             if(videoToDelete != null) {
