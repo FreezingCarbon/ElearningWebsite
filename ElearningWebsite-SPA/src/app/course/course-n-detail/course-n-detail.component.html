@@ -1,39 +1,57 @@
-<div class="container">
+<div class="container mt-5 pt-5">
     <div class="row">
-        <div class="col-12 offset-lg-1 col-lg-10">
-            <div class="text-center">
-                <img src="{{course.avaUrl}}" class="img-fluid" lt="">
-            </div>
+        <div class="col-sm-4">
+            <h1>Course Profile</h1>
         </div>
     </div>
     <div class="row">
-        <div class="col-12 offset-lg-4 col-lg-10">
-            <h1>{{course.name.toUpperCase()}}</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4 offset-md-5 col-sm">
-            <div class="row mt-4">
-                <div class="p-0 m-0">
-                    <h2 class="text-center">Description</h2>
-                    <ul *ngFor="let description of descriptions" class="mt-1">
-                        <li class="mt-1 text-list">{{description}}</li>
-                    </ul>
+        <div class="col-sm-4">
+            <div class="card">
+                <img class="card-img-top img-thumbnail" src="{{course.avaUrl}}" alt="{{course.name}}">
+                <div class="card-body">
+                    <div>
+                        <strong>Name: </strong>
+                        <p>{{course.name}}</p>
+                    </div>
+                    <div>
+                        <strong>Created Date: </strong>
+                        <p>{{course.createdAt | date: "mediumDate"}}</p>
+                    </div>
                 </div>
-            </div>
-            <div class="row mt-4">
-                <div class="p-0 m-0">
-                    <h2 class="text-center">Requirement</h2>
-                    <ul *ngFor="let requirement of requirements" class="mt-1">
-                        <li class="mt-1 text-list">{{requirement}}</li>
-                    </ul>
+                <div class="card-footer">
+                    <button *ngIf="!isTeacher()" [disabled]="!loggedIn()" class="btn btn-success btn-block">Enroll</button>
+                    <button *ngIf="isTeacher()" class="btn btn-success btn-block" (click)="toEdit()">Edit</button>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12 offset-lg-3 col-lg-10" style="font-size: 40px">
-            Login or <button class="btn btn-primary btn-lg mr-2" (click)="toRegister()">Register</button> to continue
+        <div class="col-sm-8">
+            <div class="tab-panel">
+                <tabset class="member-tabset">
+                    <tab heading="Course Info">
+                        <h4>Requirement</h4>
+                        <div *ngIf="requirements.toString() !== ''">
+                            <ul *ngFor="let requirement of requirements">
+                                <li>{{requirement}}</li>
+                            </ul>
+                        </div>
+                        <div *ngIf="requirements.toString() === ''">
+                            <p>No Requirement</p>
+                        </div>
+                        <h4>Description</h4>
+                        <div *ngIf="descriptions.toString() !== ''" class="mt-2 mb-2">
+                            <ul *ngFor="let description of descriptions">
+                                <li>{{description}}</li>
+                            </ul>
+                        </div>
+                        <div *ngIf="descriptions.toString() === ''" class="mt-2 mb-2">
+                            <p>No Description</p>
+                        </div>
+                    </tab>
+                    <tab *ngIf="loggedIn()" heading="Videos">
+                        <app-video-edit [courseId]="course.courseId" [videos]="course.videos"></app-video-edit>
+                    </tab>
+                </tabset>
+            </div>
         </div>
     </div>
 </div>

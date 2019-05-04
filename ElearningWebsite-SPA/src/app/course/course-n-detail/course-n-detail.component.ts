@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Course } from 'src/app/_models/course';
 import { routerNgProbeToken } from '@angular/router/src/router_module';
+import { AuthService } from 'src/app/_services/auth.service';
 
 @Component({
   selector: 'app-course-n-detail',
@@ -14,8 +15,9 @@ export class CourseNDetailComponent implements OnInit {
   course: Course;
   requirements: string[];
   descriptions: string[];
+
   constructor(private userService: UserService, private route: ActivatedRoute,
-    private alertify: AlertifyService, private router: Router) { }
+    private alertify: AlertifyService, private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -29,4 +31,23 @@ export class CourseNDetailComponent implements OnInit {
     this.router.navigate(['student/register/', true, false]);
   }
 
+  isTeacher() {
+    const data = JSON.parse(localStorage.getItem('user'));
+    if(data) {
+      return this.authService.loggedIn() && data['role'] === 'Teacher';
+    } else {
+      return false;
+    }
+  }
+
+  loggedIn() {
+    const data = JSON.parse(localStorage.getItem('user'));
+    if(data) {
+      return this.authService.loggedIn(); 
+    }
+  }
+
+  toEdit() {
+    this.router.navigate(['teacher/courses/edit/', this.course.courseId]);
+  }
 }
