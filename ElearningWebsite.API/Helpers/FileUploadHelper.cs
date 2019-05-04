@@ -62,12 +62,7 @@ namespace ElearningWebsite.API.Helpers
                     {
                         File = new FileDescription(file.FileName, fileStream),
                         Overwrite = true,
-                        PublicId = "ElearningWebsiteVideos/" + file.FileName.Replace(" ", ""),
-                        EagerAsync = true,
-                        EagerTransforms = new List<Transformation>() 
-                        {
-                            new Transformation().Height(360).Width(480).Quality(720)
-                        }       
+                        PublicId = "ElearningWebsiteVideos/" + file.FileName.Replace(" ", ""),     
                     };
                     var uploadResult = _cloudinary.UploadLarge(uploadParams);
 
