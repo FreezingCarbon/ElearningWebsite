@@ -49,11 +49,12 @@ namespace ElearningWebsite.API.Controllers
             return Ok(coursesToReturn);
         }
 
-        [HttpGet("{teacherId}/course/{courseId}")]
+        [HttpGet("{teacherId}/courses/{courseId}")]
         public async Task<IActionResult> GetCourse(int teacherId, int courseId)
         {
             var course = await _repo.GetCourse(courseId, teacherId);
             var courseToReturn = _mapper.Map<CourseForDetailedDto>(course);
+            // var videos = _mapper.Map<VideoForDetailedDto>(courseToReturn.Videos);
 
             return Ok(courseToReturn);
         }
@@ -183,7 +184,7 @@ namespace ElearningWebsite.API.Controllers
 
             return Ok(teacherToReturn);
         }
-
+        
         [HttpPut("{teacherId}/courses/{courseId}")]
         public async Task<IActionResult> UpdateCourse(int teacherId, int courseId, [FromBody]CourseForUpdateDto courseForUpdate)
         {
