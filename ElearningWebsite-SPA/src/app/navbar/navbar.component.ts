@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { Router } from '@angular/router';
-
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -10,25 +9,40 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent implements OnInit {
   model: any = { };
-
+  currentUser: any;
   constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) { }
 
   ngOnInit() {
+    const data = JSON.parse(localStorage.getItem('user'));
+    if(data) {
+      this.currentUser = data['unique_name'];
+    }
   }
 
   login() {
     this.authService.login(this.model).subscribe(next => {
       this.alertify.success('Logged in successfully');
-      console.log(this.authService.decodedToken);
     }, error => {
       this.alertify.error(error);
     }, () => {
-      this.router.navigate(['/courseslist']);
+      this.router.navigate(['/home']);
     });
   }
 
   loggedIn() {
     return this.authService.loggedIn();
+  }
+
+  isTeacher() {
+    const data = JSON.parse(localStorage.getItem('user'));
+    if(data) {
+      if(this.loggedIn() && data['role'] === 'Teacher') {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
   }
 
   logout() {

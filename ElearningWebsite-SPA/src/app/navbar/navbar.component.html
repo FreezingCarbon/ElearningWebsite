@@ -2,8 +2,8 @@
     <div class="container">
         <a class="navbar-brand" [routerLink]="['/home']">Elearning</a>
         <ul class="navbar-nav mr-auto ml-12">
-            <li *ngIf="loggedIn()" class="nav-item" routerLinkActive="active">
-                <a class="nav-link" [routerLink]="['/courseslist']">Your Courses</a>
+            <li *ngIf="isTeacher()" class="nav-item" routerLinkActive="active">
+                <a class="nav-link" [routerLink]="['/teacher/courses']">My Courses</a>
             </li>
             <li *ngIf="!loggedIn()" class="nav-item" routerLinkActive="active">
                 <a class="nav-link" [routerLink]="['/courses']">Courses</a>
@@ -11,11 +11,13 @@
             <li class="nav-item" routerLinkActive="active">
                 <a class="nav-link" [routerLink]="['/about']">About</a>
             </li>
-
+            <!-- <li>
+                <button ngbDropdownItem (click)="logout()">Logout</button>
+            </li> -->
         </ul>
 
         <div ngbDropdown *ngIf="loggedIn()" class="d-inline-block">
-            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Wellcome {{authService.decodedToken?.unique_name | titlecase}}</button>
+            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Wellcome {{currentUser | titlecase}}</button>
             <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
                 <button ngbDropdownItem>Edit Profile</button>
                 <button ngbDropdownItem (click)="logout()">Logout</button>
