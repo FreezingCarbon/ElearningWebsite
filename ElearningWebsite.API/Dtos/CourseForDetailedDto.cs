@@ -13,6 +13,6 @@ namespace ElearningWebsite.API.Dtos
         public string Description { get; set; }
         public string Requirement { get; set; }
         public DateTime CreatedAt { get; set; }
-        public ICollection<Video> Videos { get; set; }
+        public ICollection<VideoForDetailedDto> Videos { get; set; }
     }
 }
