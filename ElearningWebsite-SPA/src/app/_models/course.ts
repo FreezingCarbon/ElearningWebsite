@@ -7,6 +7,6 @@ export interface Course {
     avaUrl: string;
     requirement: string;
     description: string;
-    createdDate: Date;
-    video: Video[];
+    createdAt: Date;
+    videos: Video[];
 }

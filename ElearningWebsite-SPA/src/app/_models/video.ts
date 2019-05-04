@@ -1,5 +1,6 @@
 export interface Video {
-    id: number;
-    url: string;
+    videoId: number;
+    videoUrl: string;
     publicId: string;
+    createdDate: Date;
 }
