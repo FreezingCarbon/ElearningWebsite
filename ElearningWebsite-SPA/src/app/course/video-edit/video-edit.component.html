@@ -1,7 +1,7 @@
 <div class="container pt-1 mt-1">
     <div *ngFor="let video of videos" class="row">
         <div class="col-sm-10" style="text-overflow: ellipsis">
-            <a class="overflow-auto" href="{{video.publicId}}">{{video.publicId}}</a>
+            <a class="overflow-auto" href="{{video.publicId}}" (click)="videoPlayTab(video.videoUrl)">{{video.publicId}}</a>
         </div>
         <div class="col-sm-4">
             <button type="button" class="btn btn-danger btn-sm" (click)="deleteVideo(video.videoId)" title="Delete {{video.publicId}}">

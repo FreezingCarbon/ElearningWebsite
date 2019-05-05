@@ -49,7 +49,7 @@ export class VideoEditComponent implements OnInit {
         const res: Video = JSON.parse(response);
         const video: Video = {
           videoId: res.videoId,
-          url: res.url,
+          videoUrl: res.videoUrl,
           createdDate: res.createdDate,
           publicId: res.publicId
         };
@@ -76,4 +76,7 @@ export class VideoEditComponent implements OnInit {
     }
   }
 
+  videoPlayTab(link: string) {
+    window.open(link, "_blank");
+  }
 }
