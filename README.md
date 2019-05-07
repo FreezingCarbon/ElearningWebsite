@@ -1,24 +1,21 @@
 # ElearningWebsite
 **Core Structure**
-  ├── backend
-  │   ├── api
-  │   │   > DotNet Core 2.1
-  │   │   > PORT 5000
-  │   │   > localhost:5000/api/
-  │   │
-  │   ├── database
-  │   │   > PostgreSql
-  │   │   > PORT 5432
-  │   │
-  ├── frontend
-  │   ├── app
-  │   │   ├── web
-  │   │   │   > AngularJs
-  |   |   |   > Single page application
-  |   |   |   > PORT: 4200
-  |   |   |   > localhost:4200/
-  │
-  └── README.md (you are here)
+1. Backend ElearningWebsite.API
+    - api
+        - DotNet Core 2.1
+        - PORT 5000
+        - localhost:5000/api/
+    - database
+        - PostgreSql
+        - PORT 5432
+2. Frontend ElearningWebsite-SPA
+    - app
+        - web
+            - AngularJs
+            - Single page application
+            - PORT: 4200
+            - localhost:4200/
+3. README.md (you are here)
 
 **Backend**
   - API
