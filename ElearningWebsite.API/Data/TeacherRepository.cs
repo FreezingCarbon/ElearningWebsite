@@ -21,9 +21,9 @@ namespace ElearningWebsite.API.Data
             _context.Courses.Add(courseToAdd);
             _context.SaveChanges();
             var courseId = courseToAdd.CourseId;
-
-            _context.TeacherCourses.Add(new TeacherCourse {TeacherId = teacherId, CourseId = courseId});
-
+            var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.TeacherId == teacherId);
+            _context.TeacherCourses.Add(new TeacherCourse {Teacher = teacher, Course = courseToAdd, TeacherId = teacherId, CourseId = courseId});
+            _context.SaveChanges();
             return await _context.Courses.FirstOrDefaultAsync(course => course.CourseId == courseId);
         }
 

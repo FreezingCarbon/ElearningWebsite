@@ -101,32 +101,16 @@ namespace ElearningWebsite.API.Controllers
             }
             // init ava and cover file object
             dynamic ava = null;
-            dynamic cover = null;
-            // condition check the request
             int avaCount = 0;
-            int coverCount = 0;
-            // file checker init
             FormFileChecker fileTypeChecker = new FormFileChecker();
             foreach(var file in files)
             {
                 if(fileTypeChecker.CheckFileType(file, "image")) {
-                    if(file.Name == "Ava") {
-                        if(avaCount < 1) {
-                            ava = file;
-                        } else {
-                            return BadRequest("Too much Ava to upload");
-                        }
-                    } else if(file.Name == "Cover") {
-                        if(coverCount < 1) {
-                            cover = file;
-                        } else {
-                            return BadRequest("Too much Cover to upload");
-                        }
+                    if(avaCount < 1) {
+                        ava = file;
                     } else {
-                        return BadRequest("Invalid request. File must be set for Ava or Cover");
+                        return BadRequest("Too much Ava to upload");
                     }
-                } else {
-                    return BadRequest("Post file must be image type");
                 }
             }
 
@@ -135,12 +119,7 @@ namespace ElearningWebsite.API.Controllers
             // Modify image link if posted data != null
             var courseToUpdate = await _repo.GetCourse(courseId, teacherId);
             try {
-                if(ava != null) {
-                    courseToUpdate.AvaUrl = await fileUpload.UploadImage(ava);
-                }
-                if(cover != null) {
-                    courseToUpdate.CoverUrl = await fileUpload.UploadImage(cover);
-                }
+                courseToUpdate.AvaUrl = await fileUpload.UploadImage(ava);
             } catch(ImgurException imgurEx) {
                 return BadRequest("Unable to upload image to Imgur: " + imgurEx.Message);
             }
