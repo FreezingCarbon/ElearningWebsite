@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Course } from 'src/app/_models/course';
 import { NgForm } from '@angular/forms';
@@ -20,7 +20,8 @@ export class CourseEditComponent implements OnInit {
     }
   }
 
-  constructor(private route: ActivatedRoute, private alertify: AlertifyService, private teacherService: TeacherService) { }
+  constructor(private route: ActivatedRoute, private alertify: AlertifyService, 
+    private teacherService: TeacherService, private router: Router) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -36,8 +37,18 @@ export class CourseEditComponent implements OnInit {
         this.alertify.success('Course updated sucessfully');
       }, error => {
         this.alertify.error(error);
-      })
+      });
     }
   }
 
+  deleteCourse() {
+    if(confirm('Are you sure to delete this course ?')) {
+      this.teacherService.deleteCourse(this.course.courseId).subscribe(() => {
+        this.alertify.success('Course Deleted');
+        this.router.navigate(['/teacher/courses']);
+      }, error => {
+        this.alertify.error('Detete failed: ' + error);
+      })
+    }
+  }
 }

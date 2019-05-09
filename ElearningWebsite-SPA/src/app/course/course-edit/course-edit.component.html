@@ -24,7 +24,8 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button [disabled]="!editForm.dirty" form="editForm" class="btn btn-success btn-block">Save Changes</button>
+                    <div class="row"><button [disabled]="!editForm.dirty" form="editForm" class="btn btn-success btn-block">Save Changes</button></div>
+                    <div class="row mt-2 pt-2"><button class="btn btn-danger btn-block" (click)="deleteCourse()">Delete Course</button></div>
                 </div>
             </div>
         </div>
