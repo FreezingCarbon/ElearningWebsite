@@ -26,7 +26,6 @@ export class CourseEditComponent implements OnInit {
     this.route.data.subscribe(data => {
       this.course = data['course'];
     });
-    console.log(this.course);
   }
 
   updateCourse() {

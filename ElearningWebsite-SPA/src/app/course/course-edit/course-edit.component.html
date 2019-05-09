@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-sm-4">
             <div class="card">
-                <img class="card-img-top img-thumbnail" src="{{course.avaUrl}}" alt="{{course.name}}">
+                <img class="card-img-top img-thumbnail" src="{{course.avaUrl || '../../../../../assets/background.png'}}" alt="{{course.name}}">
                 <div class="card-body">
                     <div>
                         <strong>Name: </strong>
@@ -20,7 +20,7 @@
                     </div>
                     <div>
                         <strong>Created Date: </strong>
-                        <p>{{course.createdDate | date: "mediumDate"}}</p>
+                        <p>{{course.createdAt | date: "mediumDate"}}</p>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -40,10 +40,10 @@
                         </form>
                     </tab>
                     <tab heading="Edit Photo">
-
+                        <app-photo-editor [course]="course"></app-photo-editor>
                     </tab>
                     <tab heading="Edit Video">
-                        <app-video-edit [courseId]="course.courseId" [videos]="course.videos"></app-video-edit>
+                        <app-video-edit [videos]="course.videos" [courseId]="course.courseId"></app-video-edit>
                     </tab>
                 </tabset>
             </div>
