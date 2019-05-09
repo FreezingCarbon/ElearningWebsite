@@ -5,6 +5,7 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 import { TeacherService } from 'src/app/_services/teacher.service';
 import { FileUploader } from 'ng2-file-upload';
 import { AuthService } from 'src/app/_services/auth.service';
+import { ActivatedRoute, Router, ActivatedRouteSnapshot } from '@angular/router';
 
 @Component({
   selector: 'app-video-edit',
@@ -18,10 +19,14 @@ export class VideoEditComponent implements OnInit {
   hasBaseDropZoneOver = false;
   baseUrl = environment.apiUrl;
 
-  constructor(private teacherService: TeacherService, private alertify: AlertifyService, private authService: AuthService) { }
+  constructor(private teacherService: TeacherService, private alertify: AlertifyService,
+    private authService: AuthService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.initializeUploader();
+    this.route.params.subscribe(data => {
+      this.courseId = data['courseId'];
+    });
   }
 
   fileOverBase(e: any): void {
@@ -44,22 +49,23 @@ export class VideoEditComponent implements OnInit {
     }
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
     this.uploader.onSuccessItem =  (item, response, status, headers) => {
-      if(response) {
+      if (response) {
         console.log(response);
         const res: Video = JSON.parse(response);
         const video: Video = {
-          videoId: res.videoId,
-          videoUrl: res.videoUrl,
-          createdDate: res.createdDate,
-          publicId: res.publicId
+          videoId: res[0].videoId,
+          videoUrl: res[0].videoUrl,
+          createdDate: res[0].createdDate,
+          publicId: res[0].publicId
         };
+        this.alertify.success('Upload complete');
         this.videos.push(video);
       }
     };
   }
 
   deleteVideo(videoId: number) {
-    this.teacherService.deleteVideo(this.courseId ,videoId).subscribe(next => {
+    this.teacherService.deleteVideo(this.courseId , videoId).subscribe(next => {
       this.alertify.success('Deleted');
       this.videos.slice(this.videos.findIndex(v => v.videoId === videoId), 1);
     }, error => {
@@ -69,7 +75,7 @@ export class VideoEditComponent implements OnInit {
 
   isTeacher() {
     const data = JSON.parse(localStorage.getItem('user'));
-    if(data) {
+    if (data) {
       return this.authService.loggedIn() && data['role'] === 'Teacher';
     } else {
       return false;
@@ -77,6 +83,6 @@ export class VideoEditComponent implements OnInit {
   }
 
   videoPlayTab(link: string) {
-    window.open(link, "_blank");
+    window.open(link, '_blank');
   }
 }
