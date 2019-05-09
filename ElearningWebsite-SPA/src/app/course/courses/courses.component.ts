@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Course } from '../../_models/course';
 import { UserService } from 'src/app/_services/user.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Pagination, PaginatedResult } from 'src/app/_models/pagination';
 
 @Component({
@@ -15,7 +15,7 @@ export class CoursesComponent implements OnInit {
   pagination: Pagination;
 
   constructor(private userService: UserService, private alertify: AlertifyService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -36,5 +36,18 @@ export class CoursesComponent implements OnInit {
     }, error => {
       this.alertify.error(error);
     });
+  }
+
+  isTeacher() {
+    const data = JSON.parse(localStorage.getItem('user'));
+    if(data) {
+      return data['role'] === 'Teacher';
+    } else {
+      return false;
+    }
+  }
+
+  addCourse() {
+    this.router.navigate(['teacher/course/create']);
   }
 }
