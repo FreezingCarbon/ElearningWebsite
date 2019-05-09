@@ -33,6 +33,18 @@ export class NavbarComponent implements OnInit {
     return this.authService.loggedIn();
   }
 
+  isStudent() {
+    const data = JSON.parse(localStorage.getItem('user'));
+    if(data) {
+      if(this.loggedIn() && data['role'] === 'Student') {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
   isTeacher() {
     const data = JSON.parse(localStorage.getItem('user'));
     if(data) {

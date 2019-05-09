@@ -11,6 +11,8 @@ import { CourseEditComponent } from './course/course-edit/course-edit.component'
 import { EditCourseResolver } from './_resolvers/edit-course.resolver';
 import { PreventUsavedChanges } from './_guard/prevent-unsaved-changes.guard';
 import { CourseCreateComponent } from './course/course-create/course-create.component';
+import { StudentAuthGuard } from './_guard/student-auth.guard';
+import { SCoursesResolver } from './_resolvers/s-courses.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent},
@@ -18,8 +20,8 @@ export const appRoutes: Routes = [
         path: '',
         runGuardsAndResolvers: 'always',
         children: [
-            { path: 'courses', component: CoursesComponent, resolve: {courses: CoursesResolver} },
-            { path: 'courses/:id', component: CourseNDetailComponent, resolve: {course: CourseNResolver} }
+            { path: 'courses', component: CoursesComponent, resolve: { courses: CoursesResolver } },
+            { path: 'courses/:id', component: CourseNDetailComponent, resolve: { course: CourseNResolver } }
         ]
     },
     {
@@ -27,14 +29,22 @@ export const appRoutes: Routes = [
         runGuardsAndResolvers: 'always',
         canActivate: [TeacherAuthGuard],
         children: [
-            { path: 'teacher/courses', component: CoursesComponent, resolve: {courses: TCoursesResolver} },
-            { path: 'teacher/courses/edit/:id/:editMode', component: CourseEditComponent,
+            { path: 'teacher/courses', component: CoursesComponent, resolve: { courses: TCoursesResolver } },
+            { path: 'teacher/courses/edit/:id', component: CourseEditComponent,
                 canDeactivate: [PreventUsavedChanges] , resolve: { course: EditCourseResolver } },
-            { path: 'teacher/courses/:id', component: CourseNDetailComponent, resolve: {course: EditCourseResolver} },
+            { path: 'teacher/courses/:id', component: CourseNDetailComponent, resolve: { course: EditCourseResolver } },
             { path: 'teacher/course/create', component: CourseCreateComponent }
         ]
     },
-    { path: 'student/register/:registerMode/:isTeacher', component: HomeComponent},
-    { path: 'about', component: AboutComponent},
+    {
+        path: '',
+        runGuardsAndResolvers: 'always',
+        canActivate: [StudentAuthGuard],
+        children: [
+            { path: 'student/courses', component: CoursesComponent, resolve: { courses: SCoursesResolver } }
+        ]
+    },
+    { path: 'student/register/:registerMode/:isTeacher', component: HomeComponent },
+    { path: 'about', component: AboutComponent },
     { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
