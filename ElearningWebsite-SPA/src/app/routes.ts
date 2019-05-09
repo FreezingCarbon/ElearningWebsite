@@ -10,6 +10,7 @@ import { TeacherAuthGuard } from './_guard/teacher-auth.guard';
 import { CourseEditComponent } from './course/course-edit/course-edit.component';
 import { EditCourseResolver } from './_resolvers/edit-course.resolver';
 import { PreventUsavedChanges } from './_guard/prevent-unsaved-changes.guard';
+import { CourseCreateComponent } from './course/course-create/course-create.component';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent},
@@ -27,7 +28,10 @@ export const appRoutes: Routes = [
         canActivate: [TeacherAuthGuard],
         children: [
             { path: 'teacher/courses', component: CoursesComponent, resolve: {courses: TCoursesResolver} },
-            { path: 'teacher/courses/edit/:id', component: CourseEditComponent, canDeactivate: [PreventUsavedChanges] , resolve: {course: EditCourseResolver} },
+            { path: 'teacher/courses/edit/:id/:editMode', component: CourseEditComponent,
+                canDeactivate: [PreventUsavedChanges] , resolve: { course: EditCourseResolver } },
+            { path: 'teacher/courses/:id', component: CourseNDetailComponent, resolve: {course: EditCourseResolver} },
+            { path: 'teacher/course/create', component: CourseCreateComponent }
         ]
     },
     { path: 'student/register/:registerMode/:isTeacher', component: HomeComponent},
