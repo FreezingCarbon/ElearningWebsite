@@ -1,6 +1,14 @@
-<div class="card mb-4" [routerLink]="['/courses/', course.courseId]">
+<div *ngIf="!isTeacher" class="card mb-4" [routerLink]="['/courses/', course.courseId]">
     <div class="card-img-wrapper">
-        <img src="{{course.coverUrl}}" alt="{{course.name}}" class="card-img-top">
+        <img src="{{course.avaUrl || '../../../../../assets/background.png'}}" alt="{{course.name}}" class="card-img-top">
+    </div>
+    <div class="card-body p-1">
+        <p class="text-lg-center mt-3">{{course.name}}</p>
+    </div>
+</div>
+<div *ngIf="isTeacher()" class="card mb-4" (click)="toTeacherCourse(course.courseId)">
+    <div class="card-img-wrapper">
+        <img src="{{course.avaUrl || '../../../../../assets/background.png'}}" alt="{{course.name}}" class="card-img-top">
     </div>
     <div class="card-body p-1">
         <p class="text-lg-center mt-3">{{course.name}}</p>
