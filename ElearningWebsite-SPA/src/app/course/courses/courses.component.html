@@ -10,3 +10,6 @@
     <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [itemsPerPage]="pagination.itemsPerPage" [(ngModel)]="pagination.currentPage" (pageChanged)="pageChanged($event)" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
     </pagination>
 </div>
+<div *ngIf="isTeacher()" class="d-flex justify-content-center">
+    <button class="btn btn-secondary" (click)="addCourse()">Add Course</button>
+</div>
