@@ -1,19 +1,33 @@
 using System.Linq;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using System.Threading.Tasks;
 using ElearningWebsite.API.Dtos;
 using ElearningWebsite.API.Helpers;
 using ElearningWebsite.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace ElearningWebsite.API.Data
 {
     public class TeacherRepository : ITeacherRepository
     {
         private readonly DataContext _context;
+        private readonly IOptions<CloudinarySettings> _cloudinaryConfig;
+        private Cloudinary _cloudinary;
 
-        public TeacherRepository(DataContext context)
+        public TeacherRepository(DataContext context, IOptions<CloudinarySettings> cloudinaryConfig)
         {
             this._context = context;
+            this._cloudinaryConfig = cloudinaryConfig;
+
+            Account acc = new Account (
+                _cloudinaryConfig.Value.CloudName,
+                _cloudinaryConfig.Value.ApiKey,
+                _cloudinaryConfig.Value.ApiSecret
+            );
+
+            _cloudinary = new Cloudinary(acc);
         }
 
         public async Task<Course> AddCourse(Course courseToAdd, int teacherId)
@@ -34,7 +48,19 @@ namespace ElearningWebsite.API.Data
             if(courseToDelete == null) {
                 return false;
             }
-            
+
+            var videos = await _context.Videos.Where(v => v.CourseId == courseId).ToListAsync();
+            foreach (var video in videos)
+            {
+                if(video.PublicId != null) {
+                    var delParam = new DeletionParams(video.PublicId)
+                    {
+                        ResourceType = ResourceType.Video
+                    };
+
+                    var delResResult = _cloudinary.Destroy(delParam);
+                }
+            }
             _context.Courses.Remove(courseToDelete);
             await _context.SaveChangesAsync();
 

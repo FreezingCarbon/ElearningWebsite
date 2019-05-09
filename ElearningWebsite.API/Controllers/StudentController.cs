@@ -23,7 +23,7 @@ namespace ElearningWebsite.API.Controllers
             this._mapper = mapper;
         }
 
-        [HttpGet("{studentId}/course/{courseId}")]
+        [HttpGet("{studentId}/courses/{courseId}")]
         public async Task<IActionResult> GetCourse(int courseId, int studentId)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
