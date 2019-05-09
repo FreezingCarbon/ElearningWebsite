@@ -59,9 +59,21 @@ export class TeacherService {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + localStorage.getItem('token')
     });
-    
+
+    if (data) {
+      return this.http.delete(this.baseUrl + 'teacher/' + data['nameid'] + '/courses/' +
+        courseId + '/videos/' + videoId, {headers: header});
+    }
+  }
+
+  addCourse(model: any) {
+    const header = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    });
+    const data = JSON.parse(localStorage.getItem('user'));
     if(data) {
-      return this.http.delete(this.baseUrl + 'teacher/' + data['nameid'] + '/courses/' + courseId + '/videos/' + videoId, {headers: header});
+      return this.http.post(this.baseUrl + 'teacher/' + data['nameid'] + '/courses/',  model, {headers: header});
     }
   }
 }
