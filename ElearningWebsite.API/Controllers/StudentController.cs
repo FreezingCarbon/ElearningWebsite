@@ -32,15 +32,9 @@ namespace ElearningWebsite.API.Controllers
                 return Unauthorized();
             }
 
-            var course = await _repo.GetCourse(courseId, studentId);
-
-            if(course == null) {
-                return NoContent();
-            }
-
-            var courseToReturn = _mapper.Map<CourseForDetailedDto>(course);
-            
-            return Ok(courseToReturn);
+            var enrolled = _repo.IsEnrolled(courseId, studentId);
+          
+            return Ok(new { enrolled });
         }
 
         [HttpGet("{studentId}/courses")]
@@ -60,7 +54,7 @@ namespace ElearningWebsite.API.Controllers
             return Ok(coursesToReturn);
         }
         
-        [HttpPost("{studentId}/course/{courseId}")]
+        [HttpPost("{studentId}/courses/{courseId}")]
         public async Task<IActionResult> EnrollCourse(int studentId, int courseId)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string
@@ -76,7 +70,7 @@ namespace ElearningWebsite.API.Controllers
             }
         }
 
-        [HttpPut("{studentId}/course/{courseId}")]
+        [HttpPut("{studentId}/courses/{courseId}")]
         public async Task<IActionResult> RateCourse(int studentId, int courseId, [FromBody]JObject content)
         {
             string auth = Request.Headers["Authorization"]; // get bearer string

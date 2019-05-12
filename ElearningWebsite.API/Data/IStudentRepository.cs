@@ -8,7 +8,7 @@ namespace ElearningWebsite.API.Data
     {
         Task<bool> RateCourse(int ratingPoint, int courseId, int studentId);
         Task<PagedList<Course>> GetCourses(CourseParam courseParams, int studentId);
-        Task<Course> GetCourse(int courseId, int studentId);
+        bool IsEnrolled(int courseId, int studentId);
         Task<bool> Enroll(int courseId, int studentId);
     }
 }

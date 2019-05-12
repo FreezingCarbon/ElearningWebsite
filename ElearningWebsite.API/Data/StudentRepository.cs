@@ -27,11 +27,10 @@ namespace ElearningWebsite.API.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<Course> GetCourse(int courseId, int studentId)
+        public bool IsEnrolled(int courseId, int studentId)
         {
-            var course = await _context.Courses.Include(v => v.Videos).Where(c => c.StudentCourses.Any(sc => sc.StudentId == studentId)).FirstOrDefaultAsync(c => c.CourseId == courseId);
-
-            return course;
+            var enrolled = _context.StudentCourses.Where(sc => (sc.CourseId == courseId) && (sc.StudentId == studentId)).Count() > 0;
+            return enrolled;
         }
 
         public async Task<PagedList<Course>> GetCourses(CourseParam courseParams, int studentId)
