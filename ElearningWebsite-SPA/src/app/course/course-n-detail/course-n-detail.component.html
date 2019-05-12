@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button *ngIf="!isTeacher()" [disabled]="!loggedIn()" class="btn btn-success btn-block">Enroll</button>
+                    <button *ngIf="!isTeacher()" [disabled]="isEnrolled()" class="btn btn-success btn-block" (click)="enroll(course.courseId)">Enroll</button>
                     <button *ngIf="isTeacher()" class="btn btn-success btn-block" (click)="toEdit()">Edit</button>
                 </div>
             </div>

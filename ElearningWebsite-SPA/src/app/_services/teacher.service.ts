@@ -76,4 +76,15 @@ export class TeacherService {
       return this.http.post(this.baseUrl + 'teacher/' + data['nameid'] + '/courses/',  model, {headers: header});
     }
   }
+
+  deleteCourse(courseId) {
+    const header = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    });
+    const data = JSON.parse(localStorage.getItem('user'));
+    if(data) {
+      return this.http.delete(this.baseUrl + 'teacher/' + data['nameid'] + '/courses/' + courseId, {headers: header});
+    }
+  }
 }

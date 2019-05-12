@@ -32,6 +32,10 @@ import { PreventUsavedChanges } from './_guard/prevent-unsaved-changes.guard';
 import { VideoEditComponent } from './course/video-edit/video-edit.component';
 import { PhotoEditorComponent } from './course/photo-editor/photo-editor.component';
 import { CourseCreateComponent } from './course/course-create/course-create.component';
+import { StudentAuthGuard } from './_guard/student-auth.guard';
+import { SCoursesResolver } from './_resolvers/s-courses.resolver';
+import { StudentService } from './_services/student.service';
+import { EnrolledResolver } from './_resolvers/enrolled.resolver';
 
 @NgModule({
    declarations: [
@@ -63,14 +67,18 @@ import { CourseCreateComponent } from './course/course-create/course-create.comp
       TeacherService,
       UserService,
       TeacherService,
+      StudentService,
       ErrorInterceptorProvider,
       AlertifyService,
       TeacherAuthGuard,
+      StudentAuthGuard,
       PreventUsavedChanges,
       CoursesResolver,
       CourseNResolver,
       TCoursesResolver,
-      EditCourseResolver
+      SCoursesResolver,
+      EditCourseResolver,
+      EnrolledResolver
    ],
    bootstrap: [
       AppComponent

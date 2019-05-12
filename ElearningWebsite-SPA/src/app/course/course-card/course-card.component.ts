@@ -14,18 +14,32 @@ export class CourseCardComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
+
   }
 
   isTeacher() {
     const data = JSON.parse(localStorage.getItem('user'));
-    if(data) {
-      return this.authService.loggedIn() && data['role'] == 'Teacher';
-    } else { 
-      return false; 
+    if (data) {
+      return this.authService.loggedIn() && data['role'] === 'Teacher';
+    } else {
+      return false;
+    }
+  }
+
+  isStudent() {
+    const data = JSON.parse(localStorage.getItem('user'));
+    if (data) {
+      return this.authService.loggedIn() && data['role'] === 'Student';
+    } else {
+      return false;
     }
   }
 
   toTeacherCourse(courseId) {
-    this.router.navigate(['/teacher/courses', courseId])
+    this.router.navigate(['/teacher/courses', courseId]);
+  }
+
+  toStudentCourse(courseId) {
+    this.router.navigate(['/student/courses', courseId]);
   }
 }

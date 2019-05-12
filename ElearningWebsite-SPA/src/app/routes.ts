@@ -13,6 +13,7 @@ import { PreventUsavedChanges } from './_guard/prevent-unsaved-changes.guard';
 import { CourseCreateComponent } from './course/course-create/course-create.component';
 import { StudentAuthGuard } from './_guard/student-auth.guard';
 import { SCoursesResolver } from './_resolvers/s-courses.resolver';
+import { EnrolledResolver } from './_resolvers/enrolled.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent},
@@ -41,7 +42,8 @@ export const appRoutes: Routes = [
         runGuardsAndResolvers: 'always',
         canActivate: [StudentAuthGuard],
         children: [
-            { path: 'student/courses', component: CoursesComponent, resolve: { courses: SCoursesResolver } }
+            { path: 'student/courses', component: CoursesComponent, resolve: { courses: SCoursesResolver } },
+            { path: 'student/courses/:id', component: CourseNDetailComponent, resolve: { course: CourseNResolver, isEnrolled: EnrolledResolver } }
         ]
     },
     { path: 'student/register/:registerMode/:isTeacher', component: HomeComponent },

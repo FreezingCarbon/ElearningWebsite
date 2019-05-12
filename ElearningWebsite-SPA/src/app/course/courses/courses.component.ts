@@ -22,6 +22,7 @@ export class CoursesComponent implements OnInit {
       this.courses = data['courses'].result;
       this.pagination = data['courses'].pagination;
     });
+    console.log(this.courses);
   }
 
   pageChanged(event: any): void {
@@ -40,7 +41,7 @@ export class CoursesComponent implements OnInit {
 
   isTeacher() {
     const data = JSON.parse(localStorage.getItem('user'));
-    if(data) {
+    if (data) {
       return data['role'] === 'Teacher';
     } else {
       return false;

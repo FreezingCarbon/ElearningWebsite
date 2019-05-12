@@ -6,6 +6,7 @@ import { Course } from 'src/app/_models/course';
 import { routerNgProbeToken } from '@angular/router/src/router_module';
 import { AuthService } from 'src/app/_services/auth.service';
 import { Video } from 'src/app/_models/video';
+import { StudentService } from 'src/app/_services/student.service';
 
 @Component({
   selector: 'app-course-n-detail',
@@ -15,20 +16,22 @@ import { Video } from 'src/app/_models/video';
 export class CourseNDetailComponent implements OnInit {
   course: Course;
   videos: Video[];
+  enrolled: boolean;
   requirements: string[];
   descriptions: string[];
 
-  constructor(private userService: UserService, private route: ActivatedRoute,
+  constructor(private userService: UserService, private route: ActivatedRoute, private studentService: StudentService,
     private alertify: AlertifyService, private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
       this.course = data['course'];
+      this.enrolled = data['isEnrolled'].enrolled;
     });
-    if(this.course.requirement) {
+    if (this.course.requirement) {
       this.requirements = this.course.requirement.split('\n');
     }
-    if(this.course.description) {
+    if (this.course.description) {
       this.descriptions = this.course.description.split('\n');
     }
     this.videos = this.course.videos;
@@ -36,6 +39,10 @@ export class CourseNDetailComponent implements OnInit {
 
   toRegister() {
     this.router.navigate(['student/register/', true, false]);
+  }
+
+  toEdit() {
+    this.router.navigate(['teacher/courses/edit/', this.course.courseId]);
   }
 
   isTeacher() {
@@ -47,6 +54,10 @@ export class CourseNDetailComponent implements OnInit {
     }
   }
 
+  isEnrolled() {
+    return !this.isTeacher() && this.enrolled;
+  }
+
   loggedIn() {
     const data = JSON.parse(localStorage.getItem('user'));
     if (data) {
@@ -54,8 +65,13 @@ export class CourseNDetailComponent implements OnInit {
     }
   }
 
-  toEdit() {
-    this.router.navigate(['teacher/courses/edit/', this.course.courseId, true]);
+  enroll(courseId) {
+    this.studentService.enroll(courseId).subscribe(next => {
+      this.enrolled = true;
+      this.alertify.success('Enrolled');
+    }, error => {
+      this.alertify.error(error);
+    });
   }
 
   videoPlayTab(link: string) {
