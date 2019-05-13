@@ -9,11 +9,9 @@ namespace ElearningWebsite.API.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<StudentCourse> StudentCourses { get; set; }
         public DbSet<TeacherCourse> TeacherCourses { get; set; }
-        public DbSet<CourseCategory> CourseCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,18 +38,6 @@ namespace ElearningWebsite.API.Data
                 .HasOne(tc => tc.Course)
                 .WithMany(c => c.TeacherCourses)
                 .HasForeignKey(tc => tc.CourseId);
-
-            // config Pk, FK for CourseCategory
-            modelBuilder.Entity<CourseCategory>()
-                .HasKey(cc => new { cc.CourseId, cc.CategoryId });
-            modelBuilder.Entity<CourseCategory>()
-                .HasOne(cc => cc.Course)
-                .WithMany(c => c.CourseCategories)
-                .HasForeignKey(cc => cc.CourseId);
-            modelBuilder.Entity<CourseCategory>()
-                .HasOne(cc => cc.Category)
-                .WithMany(c => c.CourseCategories)
-                .HasForeignKey(cc => cc.CategoryId);
         }
 
     }

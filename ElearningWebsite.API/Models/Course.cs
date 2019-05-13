@@ -13,7 +13,6 @@ namespace ElearningWebsite.API.Models
         public string Requirement { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<StudentCourse> StudentCourses { get; set; }
-        public ICollection<CourseCategory> CourseCategories { get; set; }
         public ICollection<TeacherCourse> TeacherCourses { get; set; }
         public ICollection<Video> Videos { get; set; }
 
