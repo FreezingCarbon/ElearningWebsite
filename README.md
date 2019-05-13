@@ -1,5 +1,7 @@
 # ElearningWebsite
-**Core Structure**
+
+## Core Structure
+
 1. Backend ElearningWebsite.API
     - api
         - DotNet Core 2.1
@@ -17,7 +19,7 @@
             - localhost:4200/
 3. README.md (you are here)
 
-**Backend**
+### Backend
   - API
     - Technologies
         - DotNet Core
@@ -26,13 +28,14 @@
         - PostgreSql
 
 View API in detail at [API](./ElearningWebsite.API/API.md)
-**Frontend**
-  - API
+
+### Frontend
+  - Web
     - Technologies
         - AngularJs
         - Bootstrap 4.x
 
-**Setup and Running**
+## Setup and Running
 1. Prerequisites
     - DotNet Core SDK 2.1.x
     - NodeJs v10.x
@@ -55,7 +58,7 @@ View API in detail at [API](./ElearningWebsite.API/API.md)
     ng serve
     ```
 
-**Author**
+## Author
 Kien Nguyen Duc
 
 
