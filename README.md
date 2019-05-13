@@ -25,6 +25,7 @@
     - Technologies
         - PostgreSql
 
+View API in detail at [API](./ElearningWebsite.API/API.md)
 **Frontend**
   - API
     - Technologies
@@ -40,12 +41,19 @@
 3. API
     - cd into ElearningWebsite.API folder
     - config appsettings.json ConnectionStrings with your PostgreSql config
-    - run >dotnet restore
-    - run >dotnet run
+    - run following command
+    ```shell
+    dotnet ef database update
+    dotnet restore
+    dotnet run
+    ```
 4. Frontend
     - cd into ElearningWebsite-SPA folder
-    - run >npm install
-    - run >ng serve
+    - run following command 
+    ```shell
+    npm install
+    ng serve
+    ```
 
 **Author**
 Kien Nguyen Duc
